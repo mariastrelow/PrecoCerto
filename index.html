@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PreçoCerto</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <aside class="menu">
+    <div class="marca">
+      PreçoCerto
+      <small>Precificação para pequenos negócios</small>
+    </div>
+    <nav>
+      <a href="#inicio">Início</a>
+      <a href="#calculadora">Calculadora</a>
+      <a href="#produtos">Produtos</a>
+      <a href="#sobre">Sobre o projeto</a>
+    </nav>
+  </aside>
+
+  <main>
+    <section id="inicio">
+      <header>
+        <p class="sobretitulo">Painel</p>
+        <h1>Visão geral dos seus preços</h1>
+        <p>Acompanhe custos, preços de venda e margens dos produtos cadastrados.</p>
+        <a class="botao" href="#calculadora">Calcular preço de venda</a>
+      </header>
+      <div class="indicadores">
+        <div class="cartao"><small>Produtos</small><strong>0</strong></div>
+        <div class="cartao"><small>Custo médio</small><strong>R$ 0,00</strong></div>
+        <div class="cartao"><small>Margem média</small><strong>0%</strong></div>
+      </div>
+      <div class="cartao">
+        <h2>Como usar</h2>
+        <ol>
+          <li>Informe os custos do produto.</li>
+          <li>Defina taxas, impostos e a margem desejada.</li>
+          <li>Veja o preço sugerido e salve o produto.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="calculadora">
+      <header>
+        <p class="sobretitulo">Ficha técnica</p>
+        <h1>Calculadora de precificação</h1>
+        <p>Informe os custos e percentuais para ver o preço sugerido.</p>
+      </header>
+      <div class="duas-colunas">
+        <form class="cartao">
+          <label>Nome do produto <input type="text" placeholder="Ex.: Hambúrguer artesanal"></label>
+          <label>Custo dos ingredientes (R$) <input type="text" inputmode="decimal" placeholder="0,00"></label>
+          <label>Embalagem e outros custos (R$) <input type="text" inputmode="decimal" placeholder="0,00"></label>
+          <label>Taxas e impostos (%) <input type="text" inputmode="decimal" placeholder="0"></label>
+          <label>Margem de lucro desejada (%) <input type="text" inputmode="decimal" placeholder="0"></label>
+          <button class="botao azul" type="button">Salvar produto</button>
+        </form>
+        <div class="cartao resultado">
+          <h2>Resultado</h2>
+          <p class="preco"><small>Preço sugerido</small>R$ 21,67</p>
+          <p>Custo total <strong>R$ 13,00</strong></p>
+          <p>Lucro por unidade <strong>R$ 6,50</strong></p>
+          <p>Margem <strong>30%</strong></p>
+          <button class="botao" type="button" id="copiar">Copiar resultado</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="produtos">
+      <header>
+        <p class="sobretitulo">Acompanhamento</p>
+        <h1>Produtos</h1>
+        <p>Lista dos produtos cadastrados com custo, preço e margem.</p>
+      </header>
+      <div class="cartao">
+        <table>
+          <thead>
+            <tr><th>Produto</th><th>Custo</th><th>Preço</th><th>Margem</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Hambúrguer artesanal</td><td>R$ 13,00</td><td>R$ 21,67</td><td>30%</td></tr>
+            <tr><td>Pizza média</td><td>R$ 18,00</td><td>R$ 30,00</td><td>30%</td></tr>
+            <tr><td>Brigadeiro (un.)</td><td>R$ 0,80</td><td>R$ 1,33</td><td>30%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="sobre">
+      <header>
+        <p class="sobretitulo">Informações</p>
+        <h1>Sobre o projeto</h1>
+      </header>
+      <div class="cartao">
+        <h2>Problema</h2>
+        <p>Muitos pequenos empreendedores de alimentação definem preços sem conhecer o custo real dos produtos, o que gera prejuízo e margens baixas.</p>
+      </div>
+      <div class="cartao">
+        <h2>Objetivo</h2>
+        <p>Permitir calcular o custo, o preço de venda sugerido, o lucro e a margem de cada produto.</p>
+      </div>
+      <div class="cartao">
+        <h2>Recurso utilizado</h2>
+        <p>Área de transferência (Clipboard API), para copiar o resultado.</p>
+      </div>
+      <div class="cartao">
+        <h2>Cuidados</h2>
+        <p>Nenhum dado pessoal é coletado e os resultados são estimativas, sem garantia de lucro.</p>
+      </div>
+      <div class="cartao">
+        <h2>Integrantes</h2>
+        <p>Maria Eduarda Strelow, Pedro Henrique Azevedo e Thiago Henrique Fonseca.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
