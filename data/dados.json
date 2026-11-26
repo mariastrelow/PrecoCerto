@@ -1,0 +1,18 @@
+{
+  "categorias": ["Lanches", "Pizzas", "Doces", "Salgados", "Bebidas", "Outros"],
+  "margemMinima": 15,
+  "dicas": [
+    "Lembre de incluir a embalagem no custo, principalmente nos pedidos de delivery.",
+    "Os aplicativos de entrega cobram taxa sobre a venda. Coloque esse valor em 'Taxas e impostos'.",
+    "Revise os preços sempre que o preço dos ingredientes subir.",
+    "Uma margem muito baixa pode não cobrir imprevistos, como perdas e desperdício.",
+    "Compare seu preço com o da concorrência, mas não venda abaixo do custo."
+  ],
+  "exemplos": [
+    { "nome": "Hambúrguer artesanal", "categoria": "Lanches", "custoIngredientes": 11, "custoEmbalagem": 2, "taxas": 10, "margem": 30 },
+    { "nome": "Pizza média", "categoria": "Pizzas", "custoIngredientes": 15, "custoEmbalagem": 3, "taxas": 10, "margem": 30 },
+    { "nome": "Brigadeiro (un.)", "categoria": "Doces", "custoIngredientes": 0.6, "custoEmbalagem": 0.2, "taxas": 10, "margem": 30 },
+    { "nome": "Coxinha", "categoria": "Salgados", "custoIngredientes": 2.5, "custoEmbalagem": 0.3, "taxas": 8, "margem": 25 },
+    { "nome": "Refrigerante lata", "categoria": "Bebidas", "custoIngredientes": 3.5, "custoEmbalagem": 0, "taxas": 10, "margem": 10 }
+  ]
+}
