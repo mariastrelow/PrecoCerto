@@ -3,10 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta name="description" content="Calculadora de preço de venda para pequenos negócios de alimentação">
+  <meta name="description" content="Calculadora de preço de venda para pequenos negócios de alimentação">
   <title>PreçoCerto</title>
   <link rel="icon" href="assets/imagens/icone.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/style.css">
+
+  <script src="js/armazenamento.js" defer></script>
+  <script src="js/calculos.js" defer></script>
+  <script src="js/validacao.js" defer></script>
+  <script src="js/estado.js" defer></script>
+  <script src="js/interface.js" defer></script>
+  <script src="js/navegacao.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
 <body>
@@ -15,15 +22,18 @@
       PreçoCerto
       <small>Precificação para pequenos negócios</small>
     </div>
-    <nav>
-      <a href="#inicio">Início</a>
+    <nav aria-label="Menu principal">
+      <a href="#inicio">Dashboard</a>
       <a href="#calculadora">Calculadora</a>
       <a href="#produtos">Produtos</a>
       <a href="#sobre">Sobre o projeto</a>
     </nav>
+    <p id="status-conexao" class="conexao online" role="status">Online</p>
   </aside>
 
   <main>
+    <p id="aviso-dados" class="aviso" role="status">Carregando dados...</p>
+
     <section id="inicio">
       <header>
         <p class="sobretitulo">Painel</p>
@@ -31,11 +41,40 @@
         <p>Acompanhe custos, preços de venda e margens dos produtos cadastrados.</p>
         <a class="botao" href="#calculadora">Calcular preço de venda</a>
       </header>
+
       <div class="indicadores">
-        <div class="cartao"><small>Produtos</small><strong>0</strong></div>
-        <div class="cartao"><small>Custo médio</small><strong>R$ 0,00</strong></div>
-        <div class="cartao"><small>Margem média</small><strong>0%</strong></div>
+        <div class="cartao"><small>Produtos</small><strong id="ind-quantidade">0</strong></div>
+        <div class="cartao"><small>Custo médio</small><strong id="ind-custo">R$ 0,00</strong></div>
+        <div class="cartao"><small>Preço médio</small><strong id="ind-preco">R$ 0,00</strong></div>
+        <div class="cartao"><small>Margem média</small><strong id="ind-margem">0%</strong></div>
       </div>
+
+      <div id="dashboard-vazio" class="cartao vazio">
+        <h2>Nenhum produto cadastrado ainda</h2>
+        <p>Cadastre seu primeiro produto na calculadora ou carregue alguns exemplos para testar.</p>
+        <button class="botao azul" type="button" id="carregar-exemplos">Carregar exemplos</button>
+      </div>
+
+      <div id="dashboard-conteudo" class="duas-colunas-iguais">
+        <div class="cartao">
+          <h2>Lucro por unidade (top 5)</h2>
+          <div id="grafico-lucro" class="grafico"></div>
+        </div>
+        <div class="cartao">
+          <h2>Produtos por categoria</h2>
+          <div id="grafico-categorias" class="grafico"></div>
+        </div>
+        <div class="cartao">
+          <h2>Atenção</h2>
+          <ul id="lista-alertas" class="alertas"></ul>
+        </div>
+        <div class="cartao">
+          <h2>Destaques</h2>
+          <p>Maior lucro: <strong id="destaque-maior">-</strong></p>
+          <p>Menor margem: <strong id="destaque-menor">-</strong></p>
+        </div>
+      </div>
+
       <div class="cartao">
         <h2>Como usar</h2>
         <ol>
@@ -43,30 +82,57 @@
           <li>Defina taxas, impostos e a margem desejada.</li>
           <li>Veja o preço sugerido e salve o produto.</li>
         </ol>
+        <p class="dica" id="dica"></p>
       </div>
     </section>
 
     <section id="calculadora">
       <header>
         <p class="sobretitulo">Ficha técnica</p>
-        <h1>Calculadora de precificação</h1>
-        <p>Informe os custos e percentuais para ver o preço sugerido.</p>
+        <h1 id="titulo-calculadora">Calculadora de precificação</h1>
+        <p>Informe os custos e percentuais para ver o preço sugerido. Campos com * são obrigatórios.</p>
       </header>
       <div class="duas-colunas">
-        <form class="cartao">
-          <label>Nome do produto <input type="text" placeholder="Ex.: Hambúrguer artesanal"></label>
-          <label>Custo dos ingredientes (R$) <input type="text" inputmode="decimal" placeholder="0,00"></label>
-          <label>Embalagem e outros custos (R$) <input type="text" inputmode="decimal" placeholder="0,00"></label>
-          <label>Taxas e impostos (%) <input type="text" inputmode="decimal" placeholder="0"></label>
-          <label>Margem de lucro desejada (%) <input type="text" inputmode="decimal" placeholder="0"></label>
-          <button class="botao azul" type="button">Salvar produto</button>
+        <form id="form-produto" class="cartao" novalidate>
+          <label for="nome">Nome do produto *</label>
+          <input id="nome" name="nome" type="text" maxlength="60" placeholder="Ex.: Hambúrguer artesanal">
+          <span class="erro" id="erro-nome"></span>
+
+          <label for="categoria">Categoria *</label>
+          <select id="categoria" name="categoria">
+            <option value="">Carregando...</option>
+          </select>
+          <span class="erro" id="erro-categoria"></span>
+
+          <label for="custoIngredientes">Custo dos ingredientes (R$) *</label>
+          <input id="custoIngredientes" name="custoIngredientes" type="text" inputmode="decimal" placeholder="0,00">
+          <span class="erro" id="erro-custoIngredientes"></span>
+
+          <label for="custoEmbalagem">Embalagem e outros custos (R$)</label>
+          <input id="custoEmbalagem" name="custoEmbalagem" type="text" inputmode="decimal" placeholder="0,00">
+          <span class="erro" id="erro-custoEmbalagem"></span>
+
+          <label for="taxas">Taxas e impostos (%) *</label>
+          <input id="taxas" name="taxas" type="text" inputmode="decimal" placeholder="Ex.: 10">
+          <span class="erro" id="erro-taxas"></span>
+
+          <label for="margem">Margem de lucro desejada (%) *</label>
+          <input id="margem" name="margem" type="text" inputmode="decimal" placeholder="Ex.: 30">
+          <span class="erro" id="erro-margem"></span>
+
+          <div class="botoes">
+            <button class="botao azul" type="submit" id="botao-salvar">Salvar produto</button>
+            <button class="botao cinza" type="button" id="botao-cancelar" hidden>Cancelar edição</button>
+          </div>
         </form>
-        <div class="cartao resultado">
+
+        <div class="cartao resultado" aria-live="polite">
           <h2>Resultado</h2>
-          <p class="preco"><small>Preço sugerido</small>R$ 21,67</p>
-          <p>Custo total <strong>R$ 13,00</strong></p>
-          <p>Lucro por unidade <strong>R$ 6,50</strong></p>
-          <p>Margem <strong>30%</strong></p>
+          <p class="preco"><small>Preço sugerido</small><span id="res-preco">R$ 0,00</span></p>
+          <p>Custo total <strong id="res-custo">R$ 0,00</strong></p>
+          <p>Taxas e impostos <strong id="res-taxas">R$ 0,00</strong></p>
+          <p>Lucro por unidade <strong id="res-lucro">R$ 0,00</strong></p>
+          <p>Margem <strong id="res-margem">0%</strong></p>
           <button class="botao" type="button" id="copiar">Copiar resultado</button>
         </div>
       </div>
@@ -78,17 +144,31 @@
         <h1>Produtos</h1>
         <p>Lista dos produtos cadastrados com custo, preço e margem.</p>
       </header>
+
+      <div class="cartao filtros">
+        <label for="busca">Buscar
+          <input id="busca" type="search" placeholder="Nome do produto">
+        </label>
+        <label for="filtro-categoria">Categoria
+          <select id="filtro-categoria">
+            <option value="todas">Todas</option>
+          </select>
+        </label>
+      </div>
+
       <div class="cartao">
-        <table>
-          <thead>
-            <tr><th>Produto</th><th>Custo</th><th>Preço</th><th>Margem</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Hambúrguer artesanal</td><td>R$ 13,00</td><td>R$ 21,67</td><td>30%</td></tr>
-            <tr><td>Pizza média</td><td>R$ 18,00</td><td>R$ 30,00</td><td>30%</td></tr>
-            <tr><td>Brigadeiro (un.)</td><td>R$ 0,80</td><td>R$ 1,33</td><td>30%</td></tr>
-          </tbody>
-        </table>
+        <div class="tabela-rolagem">
+          <table>
+            <thead>
+              <tr>
+                <th>Produto</th><th>Categoria</th><th>Custo</th><th>Preço</th>
+                <th>Lucro</th><th>Margem</th><th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-produtos"></tbody>
+          </table>
+        </div>
+        <button class="botao vermelho" type="button" id="excluir-todos">Excluir todos</button>
       </div>
     </section>
 
@@ -103,15 +183,19 @@
       </div>
       <div class="cartao">
         <h2>Objetivo</h2>
-        <p>Permitir calcular o custo, o preço de venda sugerido, o lucro e a margem de cada produto.</p>
+        <p>Permitir calcular o custo, o preço de venda sugerido, o lucro e a margem de cada produto, e acompanhar tudo em um dashboard.</p>
       </div>
       <div class="cartao">
-        <h2>Recurso utilizado</h2>
-        <p>Área de transferência (Clipboard API), para copiar o resultado.</p>
+        <h2>Como o preço é calculado</h2>
+        <p>Preço = custo total ÷ (1 − (taxas + margem) ÷ 100). Assim as taxas e o lucro ficam embutidos no preço final.</p>
+      </div>
+      <div class="cartao">
+        <h2>Recursos utilizados</h2>
+        <p>Área de transferência (Clipboard API) para copiar o resultado, detecção de conexão (online/offline), localStorage, fetch e Service Worker para funcionar sem internet.</p>
       </div>
       <div class="cartao">
         <h2>Cuidados</h2>
-        <p>Nenhum dado pessoal é coletado e os resultados são estimativas, sem garantia de lucro.</p>
+        <p>Nenhum dado pessoal é coletado e nada é enviado para servidores. Os resultados são estimativas, sem garantia de lucro, e não substituem a orientação de um contador. Projeto com finalidade exclusivamente acadêmica.</p>
       </div>
       <div class="cartao">
         <h2>Integrantes</h2>
@@ -119,5 +203,7 @@
       </div>
     </section>
   </main>
+
+  <div id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></div>
 </body>
 </html>
